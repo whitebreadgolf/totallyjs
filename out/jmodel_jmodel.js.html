@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: jmodel/jmodel.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: jmodel/jmodel.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>'use strict';
+
+//restful keywords
+var GET = 'get',
+	GET_ALL = 'getAll',
+	ADD = 'add',
+	DELETE = 'delete',
+	UPDATE = 'update';
+
+define([
+
+  /**
+  	* @requires jsingleton
+	* @requires jmodel/ajax/ajax
+	* @requires jcontroller/render
+	* @requires jmodel/modelValidation
+	*/
+	'jsingleton', 
+	'jmodel/ajax/ajax',
+	'jcontroller/render',
+	'jmodel/modelValidation'
+
+	], function(js, ajax, render, validate){
+
+	//types
+	var BOOL = true,
+		STRING = "string",
+		FLOAT = 1.111,
+		INT = 1;
+
+	//other consts
+	var EXP_DATA = 'expected_data';
+	var DEF_ID_ROUTE = '|index|';
+
+	//type validation
+	var TYPES = {
+		INTEGER: function(value){ return Number(value) 	 === value &amp;&amp; value % 1 		=== 0; }, 	
+		FLOAT: function(value){ return value 			 === Number(value) &amp;&amp; value % 1 !== 0; }, 
+		
+		STRING: function(value){ return ((typeof value)  === (typeof STRING)); }, 
+		BOOLEAN: function(value){ return ((typeof value) === (typeof BOOL)); }
+	};
+
+	//default backend routes
+	var backendRouteObjects = {
+		get: {route: DEF_ID_ROUTE, params:false},
+		getAll: {route: '', params:false},
+		add: {route: '', params:true},
+		delete: {route: DEF_ID_ROUTE, params:false},
+		update: {route: DEF_ID_ROUTE, params:true}
+	};
+
+	//default handlers for server requests
+	var defaultHandlers = {
+		get: function(index, modelName, callback){
+			var preReqData = {index: index};
+			ajax.smart(GET, modelName, preReqData, callback);
+		},
+		getAll: function(modelName, callback){
+			ajax.smart(GET_ALL, modelName, {}, callback);
+		},
+		add: function(modelData, modelName, callback){
+			var preReqData = {}; preReqData[modelName] = modelData;
+			ajax.smart(ADD, modelName, preReqData, callback);
+		},
+		delete: function(index, modelName, callback){
+			var preReqData = {index: index};
+			ajax.smart(DELETE, modelName, preReqData, callback);
+		},
+		update: function(index, modelData, modelName, callback){
+			var preReqData = {index: index}; preReqData[modelName] = modelData;
+			ajax.smart(UPDATE, modelName, preReqData, callback);
+		}
+	};
+
+  /**
+	* JModel Module - used to add user specified modles to the application
+
+	* @exports jmodel/jmodel
+	*/	
+	var jm = {
+
+	  /**
+		* Function to add and initialize a model to the singleton 
+
+		* @function addModel
+		* @alias jloader/jloader.addModel
+
+		* @param {Object} _options - options to supplement a model
+		* @param {Object} _modelObject - user specified model object
+		*/
+		addModel: function(_options, _modelObject){
+
+			//get the primary key or set to default primary key
+			_modelObject.primary_key = _modelObject.primary_key || '_id';
+			_modelObject.layout[_modelObject.primary_key] = 'STRING';
+
+			//validate layout after the primary key is added
+			for(var type in _modelObject.layout){ if(TYPES[_modelObject.layout[type]] === undefined){ throw _options.name+' model not valid'; }}
+
+			//add instantiated model to singlton
+			js.singleton.models[_options.name] = _modelObject;
+			js.singleton.models[_options.name]['data'] = [];
+
+			//we have a backend to check
+			if(js.singleton.models[_options.name].backend !== false){
+
+				//init the backend routes to defaults if not set
+				for(var reqType in backendRouteObjects){
+					if(js.singleton.models[_options.name].backend.config.routes[reqType] === undefined){
+
+						//init objects
+						var reqRouteObject = {};
+						reqRouteObject[EXP_DATA] = [];
+
+						//set param field
+						if(backendRouteObjects[reqType].params !== undefined){
+							reqRouteObject['params'] = [{name: _options.name, type:'OBJECT'}];
+							reqRouteObject[EXP_DATA].push(_options.name)
+						}
+						else{ reqRouteObject['params'] = []; }
+
+						//set route
+						if(js.singleton.models[_options.name].backend.config.base_route.charAt(js.singleton.models[_options.name].backend.config.base_route.length) === '/'){ 
+							reqRouteObject['route'] = js.singleton.models[_options.name].backend.config.base_route + backendRouteObjects[reqType].route; 
+						}
+						else{ reqRouteObject['route'] = js.singleton.models[_options.name].backend.config.base_route + '/' + backendRouteObjects[reqType].route;}
+
+						//set expected data
+						reqRouteObject[EXP_DATA].push(backendRouteObjects[reqType].route.substr(1, backendRouteObjects[reqType].route.length-2))
+
+						//set the route object in the 
+						js.singleton.models[_options.name].backend.config.routes[reqType] = reqRouteObject;
+					}
+
+					//still add expected data field
+					else{
+						js.singleton.models[_options.name].backend.config.routes[reqType][EXP_DATA] = [];
+						
+						//add parameters
+						for(var param in js.singleton.models[_options.name].backend.config.routes[reqType].params){
+							js.singleton.models[_options.name].backend.config.routes[reqType][EXP_DATA].push(js.singleton.models[_options.name].backend.config.routes[reqType].params[param].name);
+						}
+
+						//split our route up
+						var splitRoute = js.singleton.models[_options.name].backend.config.routes[reqType].route.split('|');
+						for(var j in splitRoute){
+
+							//found a a route parameter, add to expected
+							if(splitRoute[j].indexOf('/') === -1 &amp;&amp; splitRoute[j] !== ''){js.singleton.models[_options.name].backend.config.routes[reqType][EXP_DATA].push(splitRoute[j]);}
+						}
+					}
+				}
+
+				//add default handlers if they're not specified
+				for(var reqType in defaultHandlers){
+					if(js.singleton.models[_options.name].backend.config.handlers[reqType] === undefined){
+						js.singleton.models[_options.name].backend.config.handlers[reqType] = defaultHandlers[reqType];
+					}
+				}
+
+				//get all data from backend to check 
+				js.singleton.models[_options.name].backend.config.handlers[GET_ALL](_options.name, function(data){
+
+					//our backend data is empty
+					if(data === undefined || data.length === 0 || data.length === undefined || data.length === null){
+
+						//init in front end and backend
+						if(js.singleton.models[_options.name].initialize){ 
+							for(var i in js.singleton.models[_options.name].initialize){ 
+
+								//validate our initialize data
+								validate.data(js.singleton.models[_options.name].initialize[i], js.singleton.models[_options.name]);
+								
+								//add initializing data to the backend
+								js.singleton.models[_options.name].backend.config.handlers[ADD](js.singleton.models[_options.name].initialize[i], _options.name, function(data){
+
+									//add the id field and push to frontend
+									js.singleton.models[_options.name].initialize[i][js.singleton.models[_options.name].primary_key] = data[js.singleton.models[_options.name].primary_key];
+									js.singleton.models[_options.name]['data'].push(js.singleton.models[_options.name].initialize[i]); 
+								});
+							}				
+						}	
+					}
+
+					//backend data exists
+					else{
+
+						//sync frontend with all backend data, no need to validate
+						for(var i in data){ js.singleton.models[_options.name].data.push(data[i]); }
+					}
+
+					//render again after model is loaded and synchronized with our app
+					render.renderAll();
+				});
+			}
+
+			//just update the frontend
+			else{
+				for(var i in js.singleton.models[_options.name].initialize){ 
+					validate.data(js.singleton.models[_options.name].initialize[i], js.singleton.models[_options.name]);
+					js.singleton.models[_options.name]['data'].push(js.singleton.models[_options.name].initialize[i]); 
+				}
+			}
+		}
+	};
+
+	//return jmodel object
+	return jm;
+});</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-jcontroller_jcontroller.html">jcontroller/jcontroller</a></li><li><a href="module-jcontroller_render.html">jcontroller/render</a></li><li><a href="module-jcontroller_subcontrollers_helperController.html">jcontroller/subcontrollers/helperController</a></li><li><a href="module-jcontroller_subcontrollers_listener_listenerObject.html">jcontroller/subcontrollers/listener/listenerObject</a></li><li><a href="module-jcontroller_subcontrollers_listener_listenerQueues.html">jcontroller/subcontrollers/listener/listenerQueues</a></li><li><a href="module-jcontroller_subcontrollers_listenerController.html">jcontroller/subcontrollers/listenerController</a></li><li><a href="module-jcontroller_subcontrollers_modelController.html">jcontroller/subcontrollers/modelController</a></li><li><a href="module-jcontroller_subcontrollers_viewController.html">jcontroller/subcontrollers/viewController</a></li><li><a href="module-jhelper_jhelper.html">jhelper/jhelper</a></li><li><a href="module-jjs.html">jjs</a></li><li><a href="module-jloader_jloader.html">jloader/jloader</a></li><li><a href="module-jloader_jsync.html">jloader/jsync</a></li><li><a href="module-jmodel_ajax_ajax.html">jmodel/ajax/ajax</a></li><li><a href="module-jmodel_alterModel_add.html">jmodel/alterModel/add</a></li><li><a href="module-jmodel_alterModel_delete.html">jmodel/alterModel/delete</a></li><li><a href="module-jmodel_alterModel_get.html">jmodel/alterModel/get</a></li><li><a href="module-jmodel_alterModel_update.html">jmodel/alterModel/update</a></li><li><a href="module-jmodel_indicies.html">jmodel/indicies</a></li><li><a href="module-jmodel_jmodel.html">jmodel/jmodel</a></li><li><a href="module-jmodel_modelValidation.html">jmodel/modelValidation</a></li><li><a href="module-jrouter_jrouter.html">jrouter/jrouter</a></li><li><a href="module-jrouter_location_locationHandler.html">jrouter/location/locationHandler</a></li><li><a href="module-jrouter_location_locationObject.html">jrouter/location/locationObject</a></li><li><a href="module-jsingleton.html">jsingleton</a></li><li><a href="module-jview_jview.html">jview/jview</a></li><li><a href="module-jview_jviewObject.html">jview/jviewObject</a></li><li><a href="module-jview_tags_tagContentParser.html">jview/tags/tagContentParser</a></li><li><a href="module-jview_tags_tagObject.html">jview/tags/tagObject</a></li><li><a href="module-jview_tags_tagObjectRender.html">jview/tags/tagObjectRender</a></li><li><a href="module-jview_tags_tags.html">jview/tags/tags</a></li><li><a href="module-jview_viewChange.html">jview/viewChange</a></li><li><a href="module-viewObjectParser.html">viewObjectParser</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a> on Mon Aug 17 2015 00:42:16 GMT-0400 (EDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
