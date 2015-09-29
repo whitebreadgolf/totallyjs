@@ -1,2 +1,4 @@
 node_modules/
 example/db
+bower_components/
+out/
