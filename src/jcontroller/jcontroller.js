@@ -11,11 +11,10 @@ define([
 	*/
 	'jsingleton', 
 	'jcontroller/subcontrollers/modelController',
-	'jcontroller/subcontrollers/helperController',
 	'jcontroller/subcontrollers/viewController',
 	'jcontroller/render'
 
-], function(js, model, helper, view, render){
+], function(js, model, view, render){
 
 
   /**
@@ -61,7 +60,7 @@ define([
 				if(controllerFunction === undefined){ throw "controller's function doesn't exist"; }
 				
 				//pass in 2 objects to help render and add data to the view
-				else{ js.singleton.controllers[_controllerName][_functionName](view, model, helper); }
+				else{ js.singleton.controllers[_controllerName][_functionName](view, model); }
 			}
 		}
 	};

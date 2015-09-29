@@ -3,15 +3,13 @@
 define([],function(){
 
   /**
-	* JSingleton Module - contains views, controllers, models, routes and helper functions
-	
+	* JSingleton Module - contains views, controllers, models, routes and helper functions	
 	* @exports jsingleton
 	*/
 	var js = {
 
 	  /**	
-		* Main singleton object
-	
+		* Main singleton object	
 		* @alias jsingleton#singleton
 		* @public
 		*/ 
@@ -19,7 +17,6 @@ define([],function(){
 
 		  /**	
 			* View map
-		
 			* @alias jsingleton#singleton#views
 			* @public
 			*/ 
@@ -27,35 +24,24 @@ define([],function(){
 
 		  /**	
 			* Route map
-		
 			* @alias jsingleton#singleton#routes
 			* @public
 			*/ 
 			routes: {},
 
 		  /**	
-			* Model map
-		
+			* Model map		
 			* @alias jsingleton#singleton#models
 			* @public
 			*/ 
 			models: {},
 
 		  /**	
-			* Controller map
-		
+			* Controller map		
 			* @alias jsingleton#singleton#controllers
 			* @public
 			*/ 
 			controllers: {},
-
-		  /**	
-			* Helper map
-		
-			* @alias jsingleton#singleton#helpers
-			* @public
-			*/ 
-			helpers: {}
 		}
 	};
 

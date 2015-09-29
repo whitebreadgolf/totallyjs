@@ -1,0 +1,1 @@
+define([],function(){var e={singleton:{views:{},routes:{},models:{},controllers:{}}};return e});

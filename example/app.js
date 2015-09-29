@@ -11,8 +11,6 @@ var jjs = require(['jjs'], function (jjs) {
 
 			{root:'controllers', files: ['home.js']},
 
-			{root:'helpers', files:['helpers.js']},
-
 			{root: 'models', files: ['person']},
 
 			{root: 'views', files: ['404','home', 'main', {

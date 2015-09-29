@@ -14,9 +14,12 @@ define([
 ], function(js, listener, jc){
 
 	//regex's for checking tag elements and handler types
-	var TAG_ELEMENTS = /(id|class|href|action|method|type|value|rel|for|style)/i;
+	var TAG_ELEMENTS = /(id|class|href|action|method|type|value|rel|for|style|title|name|width|height|alt)/i;
 	var LISTENER_TYPES = /(click|mouseover|mouseout|mouseup|mousemove)/;
 	var LISTENER_ELEMENTS = /(controller|helper)/i;
+
+	//regex for templating
+	var TEMPLATE_REPLACE = /\{\{([^\}]+)\}\}/g;
 
   /**
 	* Tag Content Parser Module - parses the tag content and identifiers

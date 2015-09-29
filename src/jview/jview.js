@@ -5,9 +5,6 @@
 //number of css classes to describe size
 var ROW_NUM = 100;
 
-//regex for templating
-var TEMPLATE_REPLACE = /\[\[([^\]]+)\]\]/g;
-
 define([
 
   /**

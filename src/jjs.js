@@ -1,7 +1,7 @@
 'use strict';
 
 define([
-	
+
   /**  	
 	* @requires jview/jview
 	* @requires jmodel/jmodel
@@ -19,7 +19,6 @@ define([
 	'jmodel/jmodel', 
 	'jcontroller/jcontroller', 
 	'jloader/jloader', 
-	'jhelper/jhelper', 
 	'jrouter/jrouter',
 	'jsingleton',
 	'jview/tags/tags',
@@ -27,29 +26,25 @@ define([
 	'jview/viewChange',
 	'viewObjectParser'
 
-], function(jv, jm, jc, jl, jh, jr, js, tags, jview, viewChange, vop){
+], function(jv, jm, jc, jl, jr, js, tags, jview, viewChange, vop){
 
   /**
 	* Just Javascript Module - main module for making apps, uses other modules for functions
-	
 	* @exports jjs
 	*/
 	var jjs = {
 
 	  /**
 		* Function to get access to create models views, controllers, routes, and helpers
-		
 		* @function app
 		* @alias jjs.app
-		
 		* @returns {Object} functions to create application components
 		*/
 		app: function(){
 			return{
 
 			  /**
-				* Function to create views
-				
+				* Function to create views	
 				* @function view
 				* @alias jjs.app#view
 				*/
@@ -79,8 +74,7 @@ define([
 				},
 
 			  /**
-				* Function to create a controller
-				
+				* Function to create a controller	
 				* @function controller
 				* @alias jjs.app#controller
 				*/
@@ -96,19 +90,7 @@ define([
 				},
 
 			  /**
-				* Function to create helpers
-				
-				* @function helper
-				* @alias jjs.app#helper
-				*/
-				helper: function(_options, _helpFunction){
-
-					js.singleton.helpers[_options.name] = _helpFunction;
-				},
-
-			  /**
-				* Function to create models
-				
+				* Function to create models	
 				* @function model
 				* @alias jjs.app#model
 				*/
@@ -154,8 +136,7 @@ define([
 				},
 
 			  /**
-				* Function to configure the application
-				
+				* Function to configure the application		
 				* @function config
 				* @alias jjs.app#config
 				*/

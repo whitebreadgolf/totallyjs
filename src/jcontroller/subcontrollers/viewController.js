@@ -13,11 +13,8 @@ define([
 
   /**
 	* View Controller Module - object uesd to control access to the model
-
 	* @exports jcontroller/subcontrollers/viewController
-
 	* @param {string} _viewName - view to render or add data to 
-
 	* @returns {Object} object that allows the user to render and add data to a specified view
 	*/	
 	var view = function(_viewName){
@@ -25,14 +22,12 @@ define([
 
 		  /**
 			* The name of the view
-
 			* @public
 			*/
 			viewName: _viewName,
 
 		  /**
 			* Function used to render a view
-
 			* @function render
 			* @alias jcontroller/subcontrollers/viewController.render
 			*/
@@ -50,10 +45,8 @@ define([
 
 		  /**
 			* Function used add data to a view
-
 			* @function addData
 			* @alias jcontroller/subcontrollers/viewController.addData
-
 			* @param {string} _name - key for value
 			* @param {string|Object} _value - value for key
 			*/
