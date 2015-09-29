@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: jloader/jloader.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: jloader/jloader.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>'use strict';
+
+define([
+
+  /**
+  	* @requires jmodel/ajax/ajax
+  	* @requires jloader/jsync
+  	* @requires jrouter/jrouter
+	*/
+	'jmodel/ajax/ajax', 
+	'jloader/jsync', 
+	'jrouter/jrouter'
+
+], function(ajax, sync, jr){
+
+	//file extention regex
+	var FILE_EXTENTION = /\.[^\.a-z]{0,3}/i;
+
+  /**
+	* JLoader Module - used to load user project files into the application
+
+	* @exports jloader/jloader
+	*/	
+	var jl = {
+
+	
+	  /**
+		* Function to load all of our defined scripts
+
+		* @function processConfigSettings
+		* @alias jloader/jloader.processConfigSettings
+
+		* @param {Object} _configObject - user specified configuration object
+		*/
+		processConfigSettings: function(_configObject){
+
+			//check if files are configured, not false
+			if(_configObject.files){ this.loadFilesInFolder(_configObject.root, _configObject.files); }
+		},
+
+	  /**
+		* Function to iterate through the user specified configuration object
+
+		* @function loadFilesInFolder
+		* @alias jloader/jloader.loadFilesInFolder
+
+		* @param {string} _folder - folder path from source
+		* @param {Object} _files - object of inner files and folders
+		*/
+		loadFilesInFolder: function(_folder, _files){
+			for(var file in _files){
+
+				//check if object or string naming file
+				if(_files[file] instanceof Object){
+
+					var filePath;
+
+					//check if we need to strip the root
+					if(_files[file].root.charAt(0) === '/'){ filePath = _files[file].root.substring(1, _files[file].root.length); }
+					if(_files[file].root.charAt(_files[file].root.length-1) === '/'){ filePath = _files[file].root.substring(0, _files[file].root.length-1); }
+					else{ filePath = _files[file].root; }
+
+					//recursive call to subfolder
+					this.loadFilesInFolder(_folder+'/'+filePath, _files[file].files);
+				}
+				else{
+
+					var fileName;
+
+					//check to see if we need to add .js
+					var file_extention = _files[file].search(FILE_EXTENTION);
+					if(file_extention > -1){ fileName = _files[file]; }
+					else{ fileName = _files[file] + '.js'; }
+
+					//make the server request
+					sync.loadingStatus++;
+					sync.start = true;
+					this.loadFileIntoApp(_folder, fileName);
+				}
+			}
+		},
+
+	  /**
+		* Function for refreshing our route with try/catch
+
+		* @function loadFileIntoApp
+		* @alias jloader/jloader.loadFileIntoApp
+
+		* @param {string} _filePath - path to the file to be loaded
+		* @param {string} _fileName - name of the files to be loaded
+		*/
+		loadFileIntoApp: function(_filePath, _fileName){
+			ajax.call('GET', window.location.origin+'/'+_filePath+'/'+_fileName, {}, function(data){
+				
+				var head = document.getElementsByTagName('head')[0];
+				var script = document.createElement('script');
+
+				//put script into index.html
+				script.innerHTML = data;
+				head.appendChild(script);
+				sync.loadingStatus--;
+
+				//when last script is loaded
+				if(sync.loadingStatus === 0){
+
+					//initializing router
+					jr.initialize();
+				}
+			});
+		}
+	};
+
+	//return jloader 
+	return jl;
+});
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-jcontroller_jcontroller.html">jcontroller/jcontroller</a></li><li><a href="module-jcontroller_render.html">jcontroller/render</a></li><li><a href="module-jcontroller_subcontrollers_helperController.html">jcontroller/subcontrollers/helperController</a></li><li><a href="module-jcontroller_subcontrollers_listener_listenerObject.html">jcontroller/subcontrollers/listener/listenerObject</a></li><li><a href="module-jcontroller_subcontrollers_listener_listenerQueues.html">jcontroller/subcontrollers/listener/listenerQueues</a></li><li><a href="module-jcontroller_subcontrollers_listenerController.html">jcontroller/subcontrollers/listenerController</a></li><li><a href="module-jcontroller_subcontrollers_modelController.html">jcontroller/subcontrollers/modelController</a></li><li><a href="module-jcontroller_subcontrollers_viewController.html">jcontroller/subcontrollers/viewController</a></li><li><a href="module-jhelper_jhelper.html">jhelper/jhelper</a></li><li><a href="module-jjs.html">jjs</a></li><li><a href="module-jloader_jloader.html">jloader/jloader</a></li><li><a href="module-jloader_jsync.html">jloader/jsync</a></li><li><a href="module-jmodel_ajax_ajax.html">jmodel/ajax/ajax</a></li><li><a href="module-jmodel_alterModel_add.html">jmodel/alterModel/add</a></li><li><a href="module-jmodel_alterModel_delete.html">jmodel/alterModel/delete</a></li><li><a href="module-jmodel_alterModel_get.html">jmodel/alterModel/get</a></li><li><a href="module-jmodel_alterModel_update.html">jmodel/alterModel/update</a></li><li><a href="module-jmodel_indicies.html">jmodel/indicies</a></li><li><a href="module-jmodel_jmodel.html">jmodel/jmodel</a></li><li><a href="module-jmodel_modelValidation.html">jmodel/modelValidation</a></li><li><a href="module-jrouter_jrouter.html">jrouter/jrouter</a></li><li><a href="module-jrouter_location_locationHandler.html">jrouter/location/locationHandler</a></li><li><a href="module-jrouter_location_locationObject.html">jrouter/location/locationObject</a></li><li><a href="module-jsingleton.html">jsingleton</a></li><li><a href="module-jview_jview.html">jview/jview</a></li><li><a href="module-jview_jviewObject.html">jview/jviewObject</a></li><li><a href="module-jview_tags_tagContentParser.html">jview/tags/tagContentParser</a></li><li><a href="module-jview_tags_tagObject.html">jview/tags/tagObject</a></li><li><a href="module-jview_tags_tagObjectRender.html">jview/tags/tagObjectRender</a></li><li><a href="module-jview_tags_tags.html">jview/tags/tags</a></li><li><a href="module-jview_viewChange.html">jview/viewChange</a></li><li><a href="module-viewObjectParser.html">viewObjectParser</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a> on Mon Aug 17 2015 00:42:16 GMT-0400 (EDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

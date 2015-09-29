@@ -1,0 +1,28 @@
+{
+  "name": "totallyjs",
+  "version": "0.0.2",
+  "homepage": "https://github.com/KarlCampanellaDysart/totallyjs",
+  "authors": [
+    "Karl Campanella-Dysart <karlcd@me.com>"
+  ],
+  "description": "a minimalist mvc framework make specifically for interacting with RESTful web interfaces",
+  "main": "jjs.js",
+  "keywords": [
+    "mvc",
+    "js",
+    "javascript",
+    "restful",
+    "framework"
+  ],
+  "devDependencies": {
+    "requirejs": "^2.1.20"
+  },
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

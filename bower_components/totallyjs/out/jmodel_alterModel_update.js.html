@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: jmodel/alterModel/update.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: jmodel/alterModel/update.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>'use strict';
+
+define([
+
+  /**
+  	* @requires jsingleton
+  	* @requires jmodel/ajax/ajax
+	* @requires jmodel/modelValidation
+	* @requires jmodel/indicies
+	*/
+	'jsingleton', 
+	'jmodel/ajax/ajax',
+	'jmodel/modelValidation', 
+	'jmodel/indicies'
+
+], function(js, ajax, validate, indicies){
+
+  /**
+	* Update Module - used to update data in a user specified model
+
+	* @exports jmodel/alterModel/update
+	*/
+	var update = {
+
+	  /**
+		* Function called once we know the indicies of the data we want to update
+
+		* @function updateModelAtIndex
+		* @alias jmodel/alterModel/update.updateModelAtIndex
+
+		* @param {Object[]} _indicies - idicies to update
+		* @param {string} _modelName - name of the model to update
+		*/
+		updateModelAtIndex: function(_indicies, _data, _modelName){
+
+			//go through indicies
+			for(var index in _indicies){
+
+				//check if valid index
+				if(_indicies[index].real_key &lt; 0){ throw 'index to delete is not valid'; }
+
+				//update value at index with data
+				for(var i in _data){ js.singleton.models[_modelName].data[_indicies[index].fake_key][i] = _data[i]; }
+
+				//update in backend
+				js.singleton.models[_modelName].backend.config.handlers[UPDATE](_indicies[index].real_key, _data, _modelName, function(updateData){});
+			}
+		},
+
+	  /**
+		* Function to process an update request from a given model
+
+		* @function updateModel
+		* @alias jmodel/alterModel/update.updateModel
+
+		* @param {Object} _data - search data to find data to update
+		* @param {string} _modelName - name of the model to update
+		* @param {boolean} _multiple - whether to update multiple data entries or just one
+		*/
+		updateModel: function(_data, _modelName, _multiple){
+
+			//validate name
+			validate.modelName(_modelName);
+
+			//validate query data
+			validate.searchData(_data.where, _modelName);
+
+			//validate update data
+			validate.updateData(_data.update, js.singleton.models[_modelName]);
+
+			//get indicies and update
+			var allIndices = indicies.forData(_data.where, _modelName, _multiple);
+			this.updateModelAtIndex(allIndices, _data.update, _modelName);
+		}
+	};
+
+	//return update object
+	return update;
+});</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-jcontroller_jcontroller.html">jcontroller/jcontroller</a></li><li><a href="module-jcontroller_render.html">jcontroller/render</a></li><li><a href="module-jcontroller_subcontrollers_helperController.html">jcontroller/subcontrollers/helperController</a></li><li><a href="module-jcontroller_subcontrollers_listener_listenerObject.html">jcontroller/subcontrollers/listener/listenerObject</a></li><li><a href="module-jcontroller_subcontrollers_listener_listenerQueues.html">jcontroller/subcontrollers/listener/listenerQueues</a></li><li><a href="module-jcontroller_subcontrollers_listenerController.html">jcontroller/subcontrollers/listenerController</a></li><li><a href="module-jcontroller_subcontrollers_modelController.html">jcontroller/subcontrollers/modelController</a></li><li><a href="module-jcontroller_subcontrollers_viewController.html">jcontroller/subcontrollers/viewController</a></li><li><a href="module-jhelper_jhelper.html">jhelper/jhelper</a></li><li><a href="module-jjs.html">jjs</a></li><li><a href="module-jloader_jloader.html">jloader/jloader</a></li><li><a href="module-jloader_jsync.html">jloader/jsync</a></li><li><a href="module-jmodel_ajax_ajax.html">jmodel/ajax/ajax</a></li><li><a href="module-jmodel_alterModel_add.html">jmodel/alterModel/add</a></li><li><a href="module-jmodel_alterModel_delete.html">jmodel/alterModel/delete</a></li><li><a href="module-jmodel_alterModel_get.html">jmodel/alterModel/get</a></li><li><a href="module-jmodel_alterModel_update.html">jmodel/alterModel/update</a></li><li><a href="module-jmodel_indicies.html">jmodel/indicies</a></li><li><a href="module-jmodel_jmodel.html">jmodel/jmodel</a></li><li><a href="module-jmodel_modelValidation.html">jmodel/modelValidation</a></li><li><a href="module-jrouter_jrouter.html">jrouter/jrouter</a></li><li><a href="module-jrouter_location_locationHandler.html">jrouter/location/locationHandler</a></li><li><a href="module-jrouter_location_locationObject.html">jrouter/location/locationObject</a></li><li><a href="module-jsingleton.html">jsingleton</a></li><li><a href="module-jview_jview.html">jview/jview</a></li><li><a href="module-jview_jviewObject.html">jview/jviewObject</a></li><li><a href="module-jview_tags_tagContentParser.html">jview/tags/tagContentParser</a></li><li><a href="module-jview_tags_tagObject.html">jview/tags/tagObject</a></li><li><a href="module-jview_tags_tagObjectRender.html">jview/tags/tagObjectRender</a></li><li><a href="module-jview_tags_tags.html">jview/tags/tags</a></li><li><a href="module-jview_viewChange.html">jview/viewChange</a></li><li><a href="module-viewObjectParser.html">viewObjectParser</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a> on Mon Aug 17 2015 00:42:16 GMT-0400 (EDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

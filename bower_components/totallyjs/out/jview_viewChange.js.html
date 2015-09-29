@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: jview/viewChange.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: jview/viewChange.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>'use strict';
+
+/* Set Constants */
+
+//0 --> xs
+var XS_VIEW = 0;
+
+//1 --> sm
+var SM_VIEW = 1;
+
+//2 --> md
+var MD_VIEW = 2;
+
+//3 --> lg
+var LG_VIEW = 3;
+
+//4 --> xl
+var XL_VIEW = 4;
+
+
+define([
+
+  /**
+    * @requires jcontroller/render
+	* @requires jview/viewSize
+    */
+	'jcontroller/render',
+	'jview/viewSize'
+
+], function(render, viewSize){
+
+  /**
+	* View Change Module - for initializing all window listeners to store view size
+	
+	* @exports jview/viewChange
+	*/
+	var viewChange = {
+
+	   /*
+		* Media Queries and Listeners
+		* 5 sizes:
+			xs --> (640) 
+			sm --> (760), 
+			md --> (960), 
+			lg --> (1200), 
+			xl --> (1200+)
+		*/
+
+	  /**
+		* Function to change view size to xs view
+		
+		* @function xsMaxChange
+		* @alias jview/viewChange.xsMaxChange
+		
+		* @param {Object} _rs - holds match media data
+		*/
+		xsMaxChange: function(_rs){ if(_rs.matches){ viewSize.view_size = XS_VIEW; render.renderAll(); }},
+
+	  /**
+		* Function to change view size to xs view
+		
+		* @function xsMinChange
+		* @alias jview/viewChange.xsMinChange
+		
+		* @param {Object} _rs - holds match media data
+		*/
+		xsMinChange: function(_rs){ if(_rs.matches){ viewSize.view_size = XS_VIEW; render.renderAll(); }},
+
+	  /**
+		* Function to change view size to sm view
+		
+		* @function smMaxChange
+		* @alias jview/viewChange.smMaxChange
+		
+		* @param {Object} _rs - holds match media data
+		*/
+		smMaxChange: function(_rs){ if(_rs.matches){ viewSize.view_size = SM_VIEW; render.renderAll(); }},
+
+	  /**
+		* Function to change view size to sm view
+		
+		* @function smMinChange
+		* @alias jview/viewChange.smMinChange
+		
+		* @param {Object} _rs - holds match media data
+		*/
+		smMinChange: function(_rs){ if(_rs.matches){ viewSize.view_size = SM_VIEW; render.renderAll(); }},
+
+	  /**
+		* Function to change view size to md view
+		
+		* @function mdMaxChange
+		* @alias jview/viewChange.mdMaxChange
+		
+		* @param {Object} _rs - holds match media data
+		*/
+		mdMaxChange: function(_rs){ if(_rs.matches){ viewSize.view_size = MD_VIEW; render.renderAll(); }},
+
+	  /**
+		* Function to change view size to md view
+		
+		* @function mdMinChange
+		* @alias jview/viewChange.mdMinChange
+		
+		* @param {Object} _rs - holds match media data
+		*/
+		mdMinChange: function(_rs){ if(_rs.matches){ viewSize.view_size = MD_VIEW; render.renderAll(); }},
+
+	  /**
+		* Function to change view size to lg view
+		
+		* @function lgMaxChange
+		* @alias jview/viewChange.lgMaxChange
+		
+		* @param {Object} _rs - holds match media data
+		*/
+		lgMaxChange: function(_rs){ if(_rs.matches){ viewSize.view_size = LG_VIEW; render.renderAll(); }},
+
+	  /**
+		* Function to change view size to lg view
+		
+		* @function lgMinChange
+		* @alias jview/viewChange.lgMinChange
+		
+		* @param {Object} _rs - holds match media data
+		*/
+		lgMinChange: function(_rs){ if(_rs.matches){ viewSize.view_size = LG_VIEW; render.renderAll(); }},
+
+	  /**
+		* Function to change view size to xl view
+		
+		* @function xlMinChange
+		* @alias jview/viewChange.xlMinChange
+		
+		* @param {Object} _rs - holds match media data
+		*/
+		xlMinChange: function(_rs){ if(_rs.matches){ viewSize.view_size = XL_VIEW; render.renderAll(); }},
+
+	  /**
+		* Function to add listeners to window media changes
+		
+		* @function initialize
+		* @alias jview/viewChange.initialize
+		*/
+		initialize: function(){
+			window.matchMedia('(max-width: 640px)').addListener(this.xsMaxChange);
+			window.matchMedia('(max-width: 760px)').addListener(this.smMaxChange);
+			window.matchMedia('(max-width: 960px)').addListener(this.mdMaxChange);
+			window.matchMedia('(max-width: 1200px)').addListener(this.lgMaxChange);
+
+			window.matchMedia('(min-width: 1px)').addListener(this.xsMinChange);
+			window.matchMedia('(min-width: 641px)').addListener(this.smMinChange);
+			window.matchMedia('(min-width: 761px)').addListener(this.mdMinChange);
+			window.matchMedia('(min-width: 961px)').addListener(this.lgMinChange);
+			window.matchMedia('(min-width: 1201px)').addListener(this.xlMinChange);
+		}
+	};
+	
+	//export viewchange object
+	return viewChange;
+});
+
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-jcontroller_jcontroller.html">jcontroller/jcontroller</a></li><li><a href="module-jcontroller_render.html">jcontroller/render</a></li><li><a href="module-jcontroller_subcontrollers_helperController.html">jcontroller/subcontrollers/helperController</a></li><li><a href="module-jcontroller_subcontrollers_listener_listenerObject.html">jcontroller/subcontrollers/listener/listenerObject</a></li><li><a href="module-jcontroller_subcontrollers_listener_listenerQueues.html">jcontroller/subcontrollers/listener/listenerQueues</a></li><li><a href="module-jcontroller_subcontrollers_listenerController.html">jcontroller/subcontrollers/listenerController</a></li><li><a href="module-jcontroller_subcontrollers_modelController.html">jcontroller/subcontrollers/modelController</a></li><li><a href="module-jcontroller_subcontrollers_viewController.html">jcontroller/subcontrollers/viewController</a></li><li><a href="module-jhelper_jhelper.html">jhelper/jhelper</a></li><li><a href="module-jjs.html">jjs</a></li><li><a href="module-jloader_jloader.html">jloader/jloader</a></li><li><a href="module-jloader_jsync.html">jloader/jsync</a></li><li><a href="module-jmodel_ajax_ajax.html">jmodel/ajax/ajax</a></li><li><a href="module-jmodel_alterModel_add.html">jmodel/alterModel/add</a></li><li><a href="module-jmodel_alterModel_delete.html">jmodel/alterModel/delete</a></li><li><a href="module-jmodel_alterModel_get.html">jmodel/alterModel/get</a></li><li><a href="module-jmodel_alterModel_update.html">jmodel/alterModel/update</a></li><li><a href="module-jmodel_indicies.html">jmodel/indicies</a></li><li><a href="module-jmodel_jmodel.html">jmodel/jmodel</a></li><li><a href="module-jmodel_modelValidation.html">jmodel/modelValidation</a></li><li><a href="module-jrouter_jrouter.html">jrouter/jrouter</a></li><li><a href="module-jrouter_location_locationHandler.html">jrouter/location/locationHandler</a></li><li><a href="module-jrouter_location_locationObject.html">jrouter/location/locationObject</a></li><li><a href="module-jsingleton.html">jsingleton</a></li><li><a href="module-jview_jview.html">jview/jview</a></li><li><a href="module-jview_jviewObject.html">jview/jviewObject</a></li><li><a href="module-jview_tags_tagContentParser.html">jview/tags/tagContentParser</a></li><li><a href="module-jview_tags_tagObject.html">jview/tags/tagObject</a></li><li><a href="module-jview_tags_tagObjectRender.html">jview/tags/tagObjectRender</a></li><li><a href="module-jview_tags_tags.html">jview/tags/tags</a></li><li><a href="module-jview_viewChange.html">jview/viewChange</a></li><li><a href="module-viewObjectParser.html">viewObjectParser</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a> on Mon Aug 17 2015 00:42:16 GMT-0400 (EDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
