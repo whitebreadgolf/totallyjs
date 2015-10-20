@@ -1,5 +1,5 @@
 //home view
-app.view({name: 'home', type: 'jview', input: 'javascript'}, function($){
+app.view({name: 'home', type: 'jview'}, function($){
 	return [
 		$.div('#main .pviewContainer', [
 			$.div('.pcenter.pviewColumn100', [
@@ -16,13 +16,13 @@ app.view({name: 'home', type: 'jview', input: 'javascript'}, function($){
 				$.button('#updateBtn click-controller=homeController.updatePerson', ['Update person'])
 			])
 		]),
-		$.jgrid({ 	
-			name: 'datagrid', 
-			columns: {default: 2, xs: 1, sm: 2, md: 5, lg: 5, xl: 10}, 
-			gridDataName: 'griddata',
+		$.repeat({ 	
+			data: 'griddata',
 			skeleton: [
-				$.h4('.name', [ 'name: {{name}}' ]),
-				$.h4('', [ 'age: {{age}}' ])
+				$.div('.gridElem',[
+					$.h4('.name', [ 'name: {{name}}' ]),
+					$.h4('', [ 'age: {{age}}' ])
+				])
 			]
 		}),
 		$.jview({name: 'main'})

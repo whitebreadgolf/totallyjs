@@ -54,7 +54,7 @@ define([
 		
 		* @param {Object} _rs - holds match media data
 		*/
-		xsMaxChange: function(_rs){ if(_rs.matches){ viewSize.view_size = XS_VIEW; render.renderAll(); }},
+		xsMaxChange: function(_rs){ if(_rs.matches){ viewSize.view_size = XS_VIEW; viewSize.viewChanged(XS_VIEW); }},
 
 	  /**
 		* Function to change view size to xs view
@@ -64,7 +64,7 @@ define([
 		
 		* @param {Object} _rs - holds match media data
 		*/
-		xsMinChange: function(_rs){ if(_rs.matches){ viewSize.view_size = XS_VIEW; render.renderAll(); }},
+		xsMinChange: function(_rs){ if(_rs.matches){ viewSize.view_size = XS_VIEW; viewSize.viewChanged(XS_VIEW); }},
 
 	  /**
 		* Function to change view size to sm view
@@ -74,7 +74,7 @@ define([
 		
 		* @param {Object} _rs - holds match media data
 		*/
-		smMaxChange: function(_rs){ if(_rs.matches){ viewSize.view_size = SM_VIEW; render.renderAll(); }},
+		smMaxChange: function(_rs){ if(_rs.matches){ viewSize.view_size = SM_VIEW; viewSize.viewChanged(SM_VIEW); }},
 
 	  /**
 		* Function to change view size to sm view
@@ -84,7 +84,7 @@ define([
 		
 		* @param {Object} _rs - holds match media data
 		*/
-		smMinChange: function(_rs){ if(_rs.matches){ viewSize.view_size = SM_VIEW; render.renderAll(); }},
+		smMinChange: function(_rs){ if(_rs.matches){ viewSize.view_size = SM_VIEW; viewSize.viewChanged(SM_VIEW); }},
 
 	  /**
 		* Function to change view size to md view
@@ -94,7 +94,7 @@ define([
 		
 		* @param {Object} _rs - holds match media data
 		*/
-		mdMaxChange: function(_rs){ if(_rs.matches){ viewSize.view_size = MD_VIEW; render.renderAll(); }},
+		mdMaxChange: function(_rs){ if(_rs.matches){ viewSize.view_size = MD_VIEW; viewSize.viewChanged(MD_VIEW); }},
 
 	  /**
 		* Function to change view size to md view
@@ -104,7 +104,7 @@ define([
 		
 		* @param {Object} _rs - holds match media data
 		*/
-		mdMinChange: function(_rs){ if(_rs.matches){ viewSize.view_size = MD_VIEW; render.renderAll(); }},
+		mdMinChange: function(_rs){ if(_rs.matches){ viewSize.view_size = MD_VIEW; viewSize.viewChanged(MD_VIEW); }},
 
 	  /**
 		* Function to change view size to lg view
@@ -114,7 +114,7 @@ define([
 		
 		* @param {Object} _rs - holds match media data
 		*/
-		lgMaxChange: function(_rs){ if(_rs.matches){ viewSize.view_size = LG_VIEW; render.renderAll(); }},
+		lgMaxChange: function(_rs){ if(_rs.matches){ viewSize.view_size = LG_VIEW; viewSize.viewChanged(LG_VIEW); }},
 
 	  /**
 		* Function to change view size to lg view
@@ -124,7 +124,7 @@ define([
 		
 		* @param {Object} _rs - holds match media data
 		*/
-		lgMinChange: function(_rs){ if(_rs.matches){ viewSize.view_size = LG_VIEW; render.renderAll(); }},
+		lgMinChange: function(_rs){ if(_rs.matches){ viewSize.view_size = LG_VIEW; viewSize.viewChanged(LG_VIEW); }},
 
 	  /**
 		* Function to change view size to xl view
@@ -134,7 +134,7 @@ define([
 		
 		* @param {Object} _rs - holds match media data
 		*/
-		xlMinChange: function(_rs){ if(_rs.matches){ viewSize.view_size = XL_VIEW; render.renderAll(); }},
+		xlMinChange: function(_rs){ if(_rs.matches){ viewSize.view_size = XL_VIEW; viewSize.viewChanged(Xl_VIEW); }},
 
 	  /**
 		* Function to add listeners to window media changes

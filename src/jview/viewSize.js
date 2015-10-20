@@ -34,10 +34,23 @@ define([], function(render){
 
 	  /**	
 		* The size of the view represented as an integer
-
+		*
 		* @public
 		*/
 		view_size: _view_size,
+
+		/**
+		 * Function called when the size of the view is changed significantly
+		 *
+		 * @function viewChanged
+		 * @alias jview/viewSize.viewChanged
+		 * @param {number} _newSize - integer representation of the new size of the view
+		*/
+		viewChanged: function(_newSize){
+
+			//we just print it out for now
+			console.log(_newSize);
+		}
 	};
 	
 	//export view size

@@ -1,7 +1,9 @@
-//home controller
-app.controller({name: 'homeController'},{
 
-	home:function(view, model){
+//home controller
+app.controller({name: 'homeController'}, function(view, model){
+
+return {
+	home:function(){
 
 		//bind data to view
 		view('home').addData('title', 'home');
@@ -13,7 +15,7 @@ app.controller({name: 'homeController'},{
 		view('home').render();
 	},
 
-	main:function(view, model){
+	main:function(){
 
 		//bind data to view
 		view('main').addData('title', 'main');
@@ -22,21 +24,23 @@ app.controller({name: 'homeController'},{
 		view('main').render();
 	}, 
 
-	addPerson: function(view, model){
+	addPerson: function(){
 		model('person').add({age: 23, height: 100, weight: 123, name: 'karl'});
 
-		this.home(view, model);
+		this.home();
 	},
 
-	deletePerson: function(view, model){
+	deletePerson: function(){
 		model('person').delete({ where: {name: 'karl'}});
 
-		this.home(view, model);
+		this.home();
 	},
 
-	updatePerson: function(view, model){
+	updatePerson: function(){
 		model('person').updateAll({ update: {age: 24}, where: {name: 'karl'} });
 
-		this.home(view, model);
+		this.home();
 	}
+};
+
 });

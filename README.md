@@ -15,9 +15,21 @@ $ bower install totallyjs
 
 As of now, totallyjs is only available as an AMD. So to use totallyjs, you'll need to use an AMD loader library like requirejs. 
 
+Totallyjs is untested for now (OMG sacrilegious), but I'm working on it. Don't worry, I do end-to-end user testing (with lots of page refreshes).
+
+## Versions
+
+	###0.0.2
+		* Routes are automatically defined in model definitions
+		* Controller definitions now return a controller object, the main function passes in "view" and "model" helpers
+		* Added parsing to the controller definitions
+			* no user error in passing in "view" and "model" helpers
+			* interface to track the varables that the developer passes in
+			* infrastructure for making "services" or "factories" in next version
+
 ##Main App File
 
-After Totally.js is loaded properly, the framework can be used to declare an application. Lets call this main file "app.js". Assume we have also included app.js in our public files (ie. <script src="app.js"></script>)). From app.js we can attach our main application variable to the window and define our app structure. 
+After Totally.js is loaded properly, the framework can be used to declare an application. Lets call this main file "app.js". Assume we have also included app.js in our public files (ie. script tag with app.js). From app.js we can attach our main application variable to the window and define our app structure. 
 
 The following code uses RequireJS to load Totally.js. You can use any AMD you want to, but I prefer Require. 
 
@@ -68,8 +80,10 @@ An example of a view would look like the one below. $ is the object that contain
 
 ```bash
 //home view
-app.view({name: 'home', type: 'jview', input: 'javascript'}, function($){
+app.view({name: 'home', type: 'jview'}, function($){
 	return [
+
+		//normal html stuff
 		$.div('#main .pviewContainer', [
 			$.div('.pcenter.pviewColumn100', [
 				$.h4('#title', ['this is {{title}}'])
@@ -85,72 +99,149 @@ app.view({name: 'home', type: 'jview', input: 'javascript'}, function($){
 				$.button('#updateBtn click-controller=homeController.updatePerson', ['Update person'])
 			])
 		]),
-		$.jgrid({ 	
-			name: 'datagrid', 
-			columns: {default: 2, xs: 1, sm: 2, md: 5, lg: 5, xl: 10}, 
-			gridDataName: 'griddata',
+
+		//to iterate
+		$.repeat({ 	
+			data: 'griddata',
 			skeleton: [
-				$.h4('.name', [ 'name: {{name}}' ]),
-				$.h4('', [ 'age: {{age}}' ])
+				$.div('.gridElem',[
+					$.h4('.name', [ 'name: {{name}}' ]),
+					$.h4('', [ 'age: {{age}}' ])
+				])
 			]
 		}),
+
+		//insert another external view
 		$.jview({name: 'main'})
 	];
 });
+
 ```
 
 ##Controller Definitions
 
-This is an example of a controller that could potentially be a part of a user's application. Controllers are defined using the following syntax:
+Controllers are defined using the following syntax:
 
 ```bash
-app.controller({name: <controller_name>}, <controller_functions_object>);
+app.controller({name: <controller_name>}, function(view, model){
+	return <controller_functions_object>
+});
 ```
-The controller functions object needs a key for each function that can be called in the controller.
+The controller functions object needs a key for each function that can be called in the controller. Two helper object are given to the user when defining a controller: "view" and "model". These are what they sound like. View is for interacting with views and model is for interacting with models. The connection between the views and models is completely up to the application developer. This is an example of a controller that could potentially be a part of a user's application. 
 
 ```bash
 //home controller
-app.controller({name: 'homeController'},{
+app.controller({name: 'homeController'}, function(view, model){
+	return {
+		home:function(){
 
-	home:function(view, model){
+			//bind data to view
+			view('home').addData('title', 'home');
 
-		//bind data to view
-		view('home').addData('title', 'home');
+			//set the grid data in the grid
+			view('home').addData('griddata', model('person').getAll());
 
-		//set the grid data in the grid
-		view('home').addData('griddata', model('person').getAll());
+			//render view
+			view('home').render();
+		},
 
-		//render view
-		view('home').render();
+		main:function(){
+
+			//bind data to view
+			view('main').addData('title', 'main');
+
+			//render view
+			view('main').render();
+		}, 
+
+		addPerson: function(){
+			model('person').add({age: 23, height: 100, weight: 123, name: 'karl'});
+
+			this.home(view, model);
+		},
+
+		deletePerson: function(){
+			model('person').delete({ where: {name: 'karl'}});
+
+			this.home(view, model);
+		},
+
+		updatePerson: function(){
+			model('person').updateAll({ update: {age: 24}, where: {name: 'karl'} });
+
+			this.home(view, model);
+		}
+	};
+});
+```
+
+##Model Definitions
+
+Models in totally.js are meant to enforce a RESTful backend interface, although totally.js can be used without a RESTful backend interface. In fact models can be used to organize data that isn't even stored on a backend (stored in the javascript environment). In later versions of totally, the user will be able to use models to manipulate storage of cookies and in web browser storage. 
+
+The "app.model" function takes 2 arguments to intantiate a model: the name of the model, and an object describing the model. The model discription must at least include the layout attribute to identify data and their types. Totally has 4 different data types: INTEGER, FLOAT, STRING, BOOLEAN. Yes, despite being a javascript framework totally differentiates between FLOATS and INTEGERS.
+
+The primary key can be defined and should be the same primary key as the developer's backend database primary key. Validation is pretty self-explanitory, the user defines a function with the same name as the piece of data and the function is passed that data. The developer must return true or false to validate the data (or not). The initialize attribute initializes an array of data if the backend is either not declaired or empty. The backend attribute takes a base route attribute to define the base route of the RESTful interface.
+
+Totally.js would generate the following routes (with parameters) for a base route of '/api/person':
+
+* GET: /api/person/{index}, no attached data
+* GET_ALL: /api/person, no attached data
+* ADD: /api/person, data: person object (with data attributes defined in model)
+* UPDATE: /api/person/{index}, data: person obejct (with one or more data attributes defined in model) 
+* DELETE: /api/person/{index}, no attached data
+
+In operations like GET, UPDATE and even DELETE, querries for the correct indecies are done on the client side.
+
+This is what a typical model definition would look like:
+
+```bash
+//model example
+app.model({name: 'person'}, {
+
+	primary_key: '_id',
+
+	//name types
+	layout: {
+		age: 'INTEGER',
+		height: 'INTEGER',
+		weight: 'INTEGER',
+		name: 'STRING'
 	},
 
-	main:function(view, model){
-
-		//bind data to view
-		view('main').addData('title', 'main');
-
-		//render view
-		view('main').render();
-	}, 
-
-	addPerson: function(view, model){
-		model('person').add({age: 23, height: 100, weight: 123, name: 'karl'});
-
-		this.home(view, model, helper);
+	//check values before they are added
+	validation: {
+		age: function(value){
+			if(value > 0 && value < 100){ return true; } return false;
+		}
 	},
 
-	deletePerson: function(view, model){
-		model('person').delete({ where: {name: 'karl'}});
+	initialize: [
+		{age: 34, height: 88, weight: 193, name: 'bill'},
+		{age: 23, height: 100, weight: 123, name: 'karl'},
+	],
 
-		this.home(view, model, helper);
-	},
+	backend: {
 
-	updatePerson: function(view, model){
-		model('person').updateAll({ update: {age: 24}, where: {name: 'karl'} });
-
-		this.home(view, model, helper);
+		base_route: '/api/person',
+		
+		//more configurations to come in the future
 	}
 });
 ```
 
+##Route Definitions
 
+Routes can be declared with the router by specifying a router object in the array passed into "app.routes()". A route object can be defined a variety of different ways. The traditional way is to connect a route to a controller, so a developer can use the "route" and "controller" keys to define values. In addition, a route can be connected to a view by using the "route" and "view" keys. If the route key is defined as "otherwise", then all unknown routes will route to that view/controller (this is usefull when describing a 404 page). The last type of route object is the one with the "reroute" and "to" keys. This will route a given route to another route. In generan, these route objects should be pretty self explanitory.
+
+Below is an example of the variety of route objects that can be defined. 
+
+```bash
+//we can link both views and controllers
+app.routes([
+	{route: '/home', controller: 'homeController.home'},
+	{route: '/main', controller: 'homeController.main'},
+	{route: 'otherwise', view: '404'},
+	{reroute: '/', to: '/home'}
+]);
+```

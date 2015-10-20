@@ -87,6 +87,7 @@ define([
 			}
 
 			//specified routename and coorisponding view
+
 			var specifiedView = js.singleton.views[js.singleton.routes[_route]];
 
 			//if the route isn't specified

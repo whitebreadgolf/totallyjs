@@ -54,12 +54,9 @@ define([
 					if(_options 		 		 === undefined){throw 'view needs options to instantiate';}
 					if(_options.name  		 === undefined){throw 'view needs name to instantiate';}
 					if(_options.type  		 === undefined){throw 'view needs type to instantiate';}
-					if(_options.input 		 === undefined){throw 'view needs input to instantiate';}
 					if(_options.type 		 !== 'jview' && 
 					   jv[_options.type] 	 === undefined){throw 'not a valid view type';}
 					
-					//check the input
-					if(_options.input === 'javascript'){
 
 						for(var tag in jv){ tags[tag] = jv[tag]; }
 
@@ -67,10 +64,7 @@ define([
 						var _view = jview(_view(tags));
 						_view.setId(_options.name);
 						js.singleton.views[_options.name] = _view;
-					}
 
-					//unknown type
-					else{ throw 'view input not valid'; }
 				},
 
 			  /**
@@ -87,6 +81,7 @@ define([
 
 					//add the controller if input if valid
 					jc.addController(_options.name, _controllerObject);
+					//jc.addController(_options.name, _controllerFunction);
 				},
 
 			  /**
@@ -108,10 +103,7 @@ define([
 					if(_modelObject.backend !== false){ 
 
 						//check all fields that are expected
-						if(_modelObject.backend.config 			 === undefined){ throw 'model needs backend configuration'; }
-						if(_modelObject.backend.config.base_route === undefined){ throw 'model needs backend configuration'; }
-						if(_modelObject.backend.config.routes 	 === undefined){ throw 'model needs backend route configuration'; }
-						if(_modelObject.backend.config.handlers 	 === undefined){ throw 'model needs backend configuration for handlers'; }
+						if(_modelObject.backend.base_route === undefined){ throw 'model needs backend configuration'; }
 					}
 					
 					//instantiate the model

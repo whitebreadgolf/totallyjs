@@ -55,30 +55,30 @@ define([
 		* @param {Object} _options - holds data to instantiate the Form Builder Object
 		* @returns {Obejct} Form Builder Object with helper functions and data
 		*/
-		jform: function(_options){
+		// jform: function(_options){
 
-			if(_options === undefined){ throw 'jform needs options to instantiate'; }
-			if(_options.modalName === undefined){ throw 'jform needs a modal to instantiate'; }
+		// 	if(_options === undefined){ throw 'jform needs options to instantiate'; }
+		// 	if(_options.modalName === undefined){ throw 'jform needs a modal to instantiate'; }
 
-			//validate the model
-			if(js.singleton.models[_options.modalName] === undefined){ throw 'model '+_options.modalName+' does not exist in app'; }
+		// 	//validate the model
+		// 	if(js.singleton.models[_options.modalName] === undefined){ throw 'model '+_options.modalName+' does not exist in app'; }
 
-			var ommitted = [];
-			if(_options.ommitted !== undefined && _options.ommitted.length > 0){ ommitted = _options.ommitted; }
+		// 	var ommitted = [];
+		// 	if(_options.ommitted !== undefined && _options.ommitted.length > 0){ ommitted = _options.ommitted; }
 
-			return{
+		// 	return{
 
-				modelName: _options.modelName,
+		// 		modelName: _options.modelName,
 
-				build: function(viewObj){
+		// 		build: function(viewObj){
 
-				},
+		// 		},
 
-				render: function(viewObj){
+		// 		render: function(viewObj){
 
-				}
-			}
-		},
+		// 		}
+		// 	}
+		// },
 
 	  /**
 		* Function to return the Table Builder Object, an object to represent a table in the dom
@@ -115,26 +115,12 @@ define([
 		* @param {Object} _options - holds data to instantiate the Grid Builder Object
 		* @returns {Obejct} Grid Builder Object with helper functions and data
 		*/
-		jgrid: function(_options){
+		repeat: function(_options){
 
 			//options needed to instantiate
 			if(_options === undefined){ throw 'grid needs options to instantiate'; return; }
 
 			//set the name of the grid for future
-			var _id = '';
-			if(_options.name !== undefined){ _id = _options.name; }
-			else{ throw 'grid needs a title'; }
-
-			//set variable size values, instantiate col size array
-			var _colSizeArray = [];
-			if(_options.columns){
-				if(_options.columns.default === undefined){throw 'columns option needs default value'; return; } 
-				if(_options.columns.xs !== undefined){ _colSizeArray.push(_options.columns.xs); } else{_colSizeArray.push(_options.columns.default); }
-				if(_options.columns.sm !== undefined){ _colSizeArray.push(_options.columns.sm); } else{_colSizeArray.push(_options.columns.default); }
-				if(_options.columns.md !== undefined){ _colSizeArray.push(_options.columns.md); } else{_colSizeArray.push(_options.columns.default); }
-				if(_options.columns.lg !== undefined){ _colSizeArray.push(_options.columns.lg); } else{_colSizeArray.push(_options.columns.default); }
-				if(_options.columns.xl !== undefined){ _colSizeArray.push(_options.columns.xl); } else{_colSizeArray.push(_options.columns.default); }
-			}
 
 			//check skeleton
 			var _skeleton = {};
@@ -142,23 +128,17 @@ define([
 			else{ throw 'grid needs a skeleton to instantiate'; }
 
 			//check data name
-			var _gridDataName = '';
-			if(_options.gridDataName !== undefined){ _gridDataName = _options.gridDataName; }
+			var _dataName = '';
+			if(_options.data !== undefined){ _dataName = _options.data; }
 			else{ throw "grid a name for it's data"; }
 
 			//return the grid object
 			return{
 
-				//set the name of the grid for future
-				id: _id,
-
-				//set variable size values, instantiate col size array
-				colSizeArray: _colSizeArray,
-
 				//name type
 				TYPE: 'grid',
 
-				gridDataName: _gridDataName,
+				dataName: _dataName,
 
 				//set the number of gridElements
 				numGridElements: 0,
@@ -179,14 +159,14 @@ define([
 				build: function(viewObj){
 
 					//error checking for the name of the grid data
-					if(viewObj[this.gridDataName] === undefined){ throw 'gridDataName '+this.gridDataName+' is not correct'; }
+					if(viewObj[this.dataName] === undefined){ throw 'gridDataName '+this.dataName+' is not correct'; }
 					
 					//if we already built the grid just change the classes and re-add the variables
-					if(this.gridElements !== undefined && this.gridElements.length === viewObj[this.gridDataName].length){ for(var i=0;i<this.gridElements.length;i++){ 
-
-						this.gridElements[i].setStyle(this.formatStyle());
-						for(var j in viewObj[this.gridDataName][i]){ this.gridElements[i].setVariable({name: j, value: viewObj[this.gridDataName][i][j]}); }
-					}}
+					if(this.gridElements !== undefined && this.gridElements.length === viewObj[this.dataName].length){ 
+						for(var i=0;i<this.gridElements.length;i++){ 
+							for(var j in viewObj[this.dataName][i]){ this.gridElements[i].setVariable({name: j, value: viewObj[this.dataName][i][j]}); }
+						}
+					}
 
 					//else make all the views
 					else{ 
@@ -194,7 +174,7 @@ define([
 						//make sure it's clear
 						this.gridElements = [];
 
-						for(var i=0;i<viewObj[this.gridDataName].length;i++){
+						for(var i=0;i<viewObj[this.dataName].length;i++){
 
 							//instantiate view with skeleton
 							var view = jview(this.skeleton);
@@ -202,11 +182,8 @@ define([
 							//set title and class
 							view.setId(this.id+'elem'+i);
 
-							//set the style property
-							view.setStyle(this.formatStyle());
-
 							//set varaibles for the view
-							for(var j in viewObj[this.gridDataName][i]){ view.setVariable({name: j, value: viewObj[this.gridDataName][i][j]}); }
+							for(var j in viewObj[this.dataName][i]){ view.setVariable({name: j, value: viewObj[this.dataName][i][j]}); }
 							this.gridElements.push(view);
 						}
 					}
@@ -214,9 +191,6 @@ define([
 					//set dom object
 					return tags.div('.pviewContainer.pcenter', this.gridElements);
 				},
-
-				//returns the appropriate style of a inner view
-				formatStyle: function(){ return 'width:' + Math.floor(ROW_NUM/(this.colSizeArray[viewSize.view_size])) + '%;display:inline-block;'; },
 
 				//make all inner views and then render
 				render: function(viewObj){ return this.build(viewObj).render(viewObj); },

@@ -1,5 +1,5 @@
 //model example
-app.model({name: 'person'},{
+app.model({name: 'person'}, {
 
 	primary_key: '_id',
 
@@ -24,24 +24,9 @@ app.model({name: 'person'},{
 	],
 
 	backend: {
-		
-		//routes show how data is sent to backend
-		config: {
-			base_route: '/api/person',
-			routes : {
-				get: {route: '/api/person/|index|', params: []},
-				getAll: {route: '/api/person', params: []},
-				add: {route: '/api/person', params: [{name: 'person', type: 'OBJECT'}]},
-				delete: {route: '/api/person/|index|', params: []},
-				//update: {route: '/api/person/|index|', params: [{name: 'person', type: 'OBJECT'}]}
-			},
-			handlers: {
 
-			}
-		}
-	},
-
-	methods: {
+		base_route: '/api/person',
 		
+		//more configurations to come in the future
 	}
 });

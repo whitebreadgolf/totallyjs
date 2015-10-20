@@ -32,9 +32,6 @@ define([
 			//optional class
 			class: '',
 
-			//style
-			style: '',
-
 			//all variables in this view
 			variables: {},
 
@@ -45,7 +42,7 @@ define([
 				for(var vars in this.variables){ viewObj[vars] = this.variables[vars];}
 
 				//format identification string
-				var idString = '#' + this.id + this.TYPE +' .' + this.class + ' style="' + this.style + '"';
+				var idString = '#' + this.id + this.TYPE +' .' + this.class;
 
 				//return the rendered tags wrapped in a div with the idString
 				return tags.div(idString, this.dom).render(viewObj); 
@@ -63,11 +60,6 @@ define([
 					else{ this.class += _class; }
 				}
 				else{ this.class = _class; }
-			},
-
-			getStyle: function(){ return this.style; },
-			setStyle: function(_style){
-				this.style = _style;
 			},
 
 			getVariable: function(_var){ if(this.variables[_var] !== undefined){return this.variables[_var];} else{ return null; }},

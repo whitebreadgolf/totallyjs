@@ -36,7 +36,6 @@ define([
 	var TYPES = {
 		INTEGER: function(value){ return Number(value) 	 === value && value % 1 		=== 0; }, 	
 		FLOAT: function(value){ return value 			 === Number(value) && value % 1 !== 0; }, 
-		
 		STRING: function(value){ return ((typeof value)  === (typeof STRING)); }, 
 		BOOLEAN: function(value){ return ((typeof value) === (typeof BOOL)); }
 	};
@@ -51,7 +50,7 @@ define([
 	};
 
 	//default handlers for server requests
-	var defaultHandlers = {
+	var defaultHandlers    = {
 		get: function(index, modelName, callback){
 			var preReqData = {index: index};
 			ajax.smart(GET, modelName, preReqData, callback);
@@ -101,6 +100,9 @@ define([
 			//add instantiated model to singlton
 			js.singleton.models[_options.name] = _modelObject;
 			js.singleton.models[_options.name]['data'] = [];
+			js.singleton.models[_options.name].backend.config = {};
+			js.singleton.models[_options.name].backend.config.handlers = {};
+			js.singleton.models[_options.name].backend.config.routes = {};
 
 			//we have a backend to check
 			if(js.singleton.models[_options.name].backend !== false){
@@ -113,50 +115,54 @@ define([
 						var reqRouteObject = {};
 						reqRouteObject[EXP_DATA] = [];
 
-						//set param field
-						if(backendRouteObjects[reqType].params !== undefined){
+						//set param field if param is true
+						if(backendRouteObjects[reqType].params){
 							reqRouteObject['params'] = [{name: _options.name, type:'OBJECT'}];
 							reqRouteObject[EXP_DATA].push(_options.name)
 						}
 						else{ reqRouteObject['params'] = []; }
 
 						//set route
-						if(js.singleton.models[_options.name].backend.config.base_route.charAt(js.singleton.models[_options.name].backend.config.base_route.length) === '/'){ 
-							reqRouteObject['route'] = js.singleton.models[_options.name].backend.config.base_route + backendRouteObjects[reqType].route; 
+						if(js.singleton.models[_options.name].backend.base_route.charAt(js.singleton.models[_options.name].backend.base_route.length) === '/'){ 
+							reqRouteObject['route'] = js.singleton.models[_options.name].backend.base_route + backendRouteObjects[reqType].route; 
 						}
-						else{ reqRouteObject['route'] = js.singleton.models[_options.name].backend.config.base_route + '/' + backendRouteObjects[reqType].route;}
+						else{ reqRouteObject['route'] = js.singleton.models[_options.name].backend.base_route + '/' + backendRouteObjects[reqType].route;}
 
 						//set expected data
-						reqRouteObject[EXP_DATA].push(backendRouteObjects[reqType].route.substr(1, backendRouteObjects[reqType].route.length-2))
+						if(backendRouteObjects[reqType].route !== ''){
+							reqRouteObject[EXP_DATA].push(backendRouteObjects[reqType].route.substr(1, backendRouteObjects[reqType].route.length-2));
+						}
 
 						//set the route object in the 
 						js.singleton.models[_options.name].backend.config.routes[reqType] = reqRouteObject;
 					}
 
+					//DEPRECIATED TO NOT EXCEPT RESTFUL ROUTES
+
 					//still add expected data field
-					else{
-						js.singleton.models[_options.name].backend.config.routes[reqType][EXP_DATA] = [];
+					// else{
+					// 	js.singleton.models[_options.name].backend.config.routes[reqType][EXP_DATA] = [];
 						
-						//add parameters
-						for(var param in js.singleton.models[_options.name].backend.config.routes[reqType].params){
-							js.singleton.models[_options.name].backend.config.routes[reqType][EXP_DATA].push(js.singleton.models[_options.name].backend.config.routes[reqType].params[param].name);
-						}
+					// 	//add parameters
+					// 	for(var param in js.singleton.models[_options.name].backend.config.routes[reqType].params){
+					// 		js.singleton.models[_options.name].backend.config.routes[reqType][EXP_DATA].push(js.singleton.models[_options.name].backend.config.routes[reqType].params[param].name);
+					// 	}
 
-						//split our route up
-						var splitRoute = js.singleton.models[_options.name].backend.config.routes[reqType].route.split('|');
-						for(var j in splitRoute){
+					// 	//split our route up
+					// 	var splitRoute = js.singleton.models[_options.name].backend.config.routes[reqType].route.split('|');
+					// 	for(var j in splitRoute){
 
-							//found a a route parameter, add to expected
-							if(splitRoute[j].indexOf('/') === -1 && splitRoute[j] !== ''){js.singleton.models[_options.name].backend.config.routes[reqType][EXP_DATA].push(splitRoute[j]);}
-						}
-					}
+					// 		//found a a route parameter, add to expected
+					// 		if(splitRoute[j].indexOf('/') === -1 && splitRoute[j] !== ''){js.singleton.models[_options.name].backend.config.routes[reqType][EXP_DATA].push(splitRoute[j]);}
+					// 	}
+					// }
 				}
 
-				//add default handlers if they're not specified
+				//add default handlers 
 				for(var reqType in defaultHandlers){
-					if(js.singleton.models[_options.name].backend.config.handlers[reqType] === undefined){
+					//if(js.singleton.models[_options.name].backend.config.handlers[reqType] === undefined){
 						js.singleton.models[_options.name].backend.config.handlers[reqType] = defaultHandlers[reqType];
-					}
+					//}
 				}
 
 				//get all data from backend to check 

@@ -38,6 +38,8 @@ define([
 
 			//check if there is a viewObj available
 			if(_viewObj === undefined){ _viewObj = this.currentView; }
+
+			//if(_viewObj.render === undefined){ return; }
 			else{ this.currentView = _viewObj; }
 
 			var renderedText = '';

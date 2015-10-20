@@ -12,9 +12,10 @@ define([
 	'jsingleton', 
 	'jcontroller/subcontrollers/modelController',
 	'jcontroller/subcontrollers/viewController',
-	'jcontroller/render'
+	'jcontroller/render',
+	'jcontroller/jcontrollerParser'
 
-], function(js, model, view, render){
+], function(js, model, view, render, jcParser){
 
 
   /**
@@ -33,7 +34,9 @@ define([
 		* @param {string} _name - the name of the controller
 		* @param {Object} _controllerObject - the user defined controller object
 		*/
-		addController: function(_name, _controllerObject){ js.singleton.controllers[_name] = _controllerObject; },
+		addController: function(_name, _controllerObject){ 
+			js.singleton.controllers[_name] = jcParser.ensureOrder(_controllerObject.toString()); 
+		},
 
 	  /**
 		* Function to call a user specified controller
@@ -54,13 +57,12 @@ define([
 
 			//error check for the controller and function name
 			if(specifiedController === undefined){ throw "controller doesn't exist"; }
-			else{
 
-				var controllerFunction = specifiedController[_functionName];
-				if(controllerFunction === undefined){ throw "controller's function doesn't exist"; }
+			//call the function
+			else{
 				
 				//pass in 2 objects to help render and add data to the view
-				else{ js.singleton.controllers[_controllerName][_functionName](view, model); }
+				js.singleton.controllers[_controllerName].func(view, model)[_functionName](); 
 			}
 		}
 	};
