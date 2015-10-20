@@ -1,0 +1,1 @@
+define([],function(){var e=/function(\s*)\(.*\)/g,t=/[a-zA-Z0-9][^,\(\)\s]*/g,n="function",r="view",i="model",s=",",o={ensureOrder:function(e){return e=e.substring(e.indexOf("{")+1,e.lastIndexOf(";")+1),{args:["view","model"],func:new Function("view","model",e)}}};return o});

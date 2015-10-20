@@ -16,6 +16,7 @@ jmodel/alterModel/get.js
 jmodel/alterModel/update.js
 jcontroller/subcontrollers/modelController.js
 jcontroller/subcontrollers/viewController.js
+jcontroller/jcontrollerParser.js
 jcontroller/jcontroller.js
 jview/tags/tagContentParser.js
 jview/tags/tagObjectRender.js
