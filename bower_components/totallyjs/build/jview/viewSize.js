@@ -1,1 +1,0 @@
-var XS_VIEW=0,SM_VIEW=1,MD_VIEW=2,LG_VIEW=3,XL_VIEW=4;define([],function(e){var t;window.innerWidth>1&&window.innerWidth<=640?t=XS_VIEW:window.innerWidth>640&&window.innerWidth<=760?t=SM_VIEW:window.innerWidth>760&&window.innerWidth<=960?t=MD_VIEW:window.innerWidth>960&&window.innerWidth<=1200?t=LG_VIEW:t=XL_VIEW;var n={view_size:t};return n});

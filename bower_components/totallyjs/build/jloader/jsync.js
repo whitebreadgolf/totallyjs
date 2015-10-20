@@ -1,1 +1,0 @@
-define([],function(){var e={loadingStatus:0,start:!1};return e});
