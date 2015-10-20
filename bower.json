@@ -6,7 +6,7 @@
     "Karl Campanella-Dysart <karlcd@me.com>"
   ],
   "description": "a minimalist mvc framework make specifically for interacting with RESTful web interfaces",
-  "main": "jjs.js",
+  "main": "build/jjs.js",
   "keywords": [
     "mvc",
     "js",
@@ -18,11 +18,8 @@
     "requirejs": "^2.1.20"
   },
   "license": "MIT",
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests"
+  "ignore": [   
+    "example",
+    "src"
   ]
 }

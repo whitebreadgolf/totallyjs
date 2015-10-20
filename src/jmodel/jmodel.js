@@ -137,25 +137,27 @@ define([
 						js.singleton.models[_options.name].backend.config.routes[reqType] = reqRouteObject;
 					}
 
-					//DEPRECIATED TO NOT EXCEPT RESTFUL ROUTES
+					//////////////////////////DEPRECIATED TO NOT EXCEPT RESTFUL ROUTES////////////////////////////
 
 					//still add expected data field
-					// else{
-					// 	js.singleton.models[_options.name].backend.config.routes[reqType][EXP_DATA] = [];
+					/*else{
+						js.singleton.models[_options.name].backend.config.routes[reqType][EXP_DATA] = [];
 						
-					// 	//add parameters
-					// 	for(var param in js.singleton.models[_options.name].backend.config.routes[reqType].params){
-					// 		js.singleton.models[_options.name].backend.config.routes[reqType][EXP_DATA].push(js.singleton.models[_options.name].backend.config.routes[reqType].params[param].name);
-					// 	}
+						//add parameters
+						for(var param in js.singleton.models[_options.name].backend.config.routes[reqType].params){
+							js.singleton.models[_options.name].backend.config.routes[reqType][EXP_DATA].push(js.singleton.models[_options.name].backend.config.routes[reqType].params[param].name);
+						}
 
-					// 	//split our route up
-					// 	var splitRoute = js.singleton.models[_options.name].backend.config.routes[reqType].route.split('|');
-					// 	for(var j in splitRoute){
+						//split our route up
+						var splitRoute = js.singleton.models[_options.name].backend.config.routes[reqType].route.split('|');
+						for(var j in splitRoute){
 
-					// 		//found a a route parameter, add to expected
-					// 		if(splitRoute[j].indexOf('/') === -1 && splitRoute[j] !== ''){js.singleton.models[_options.name].backend.config.routes[reqType][EXP_DATA].push(splitRoute[j]);}
-					// 	}
-					// }
+							//found a a route parameter, add to expected
+							if(splitRoute[j].indexOf('/') === -1 && splitRoute[j] !== ''){js.singleton.models[_options.name].backend.config.routes[reqType][EXP_DATA].push(splitRoute[j]);}
+						}
+					}*/
+
+					//////////////////////////DEPRECIATED TO NOT EXCEPT RESTFUL ROUTES////////////////////////////					
 				}
 
 				//add default handlers 
